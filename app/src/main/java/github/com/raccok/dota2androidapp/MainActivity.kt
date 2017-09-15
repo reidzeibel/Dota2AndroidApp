@@ -32,7 +32,7 @@ import android.widget.Toast
 
 class MainActivity : Activity() {
 
-  private var mainTextView: TextView? = null
+  private var mMainTextView: TextView? = null
   private var mSharedPreferences: SharedPreferences? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +41,7 @@ class MainActivity : Activity() {
     setContentView(R.layout.activity_main)
 
     // Get a handle to the TextView defined in res/layout/activity_main.xml
-    mainTextView = findViewById(R.id.main_textview)
+    mMainTextView = findViewById(R.id.main_textview)
 
     // Get a handle to the device's key-value storage
     mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE)
@@ -52,12 +52,12 @@ class MainActivity : Activity() {
 
   private fun displayWelcome() {
     // Initially displayed text
-    mainTextView!!.text = "Your favorite Dota 2 hero has not been defined yet."
+    mMainTextView?.text = "Your favorite Dota 2 hero has not been defined yet."
 
     // Read the user's favorite hero, or an empty string if nothing found
-    val name = mSharedPreferences!!.getString(PREF_NAME, "")
+    val name = mSharedPreferences?.getString(PREF_NAME, "")
 
-    if (name!!.length > 0) {
+    if (name?.isNotEmpty()!!) {
       // If the name is valid, display it
       Toast.makeText(this, "Loaded your favorite Dota 2 hero '$name' from device storage", Toast.LENGTH_LONG).show()
       setFavoriteHeroText(name)
@@ -77,9 +77,9 @@ class MainActivity : Activity() {
         val inputName = input.text.toString()
 
         // Put it into memory (don't forget to commit!)
-        val e = mSharedPreferences!!.edit()
-        e.putString(PREF_NAME, inputName)
-        e.commit()
+        val e = mSharedPreferences?.edit()
+        e?.putString(PREF_NAME, inputName)
+        e?.commit()
 
         // Let the user know the hero name was saved
         Toast.makeText(applicationContext, "Saved your favorite hero '$inputName' to device storage", Toast.LENGTH_LONG).show()
@@ -95,7 +95,7 @@ class MainActivity : Activity() {
   }
 
   private fun setFavoriteHeroText(name: String) {
-    mainTextView!!.text = "Your favorite Dota 2 hero is:\n\n$name\n\nWhat a fine choice!"
+    mMainTextView?.text = "Your favorite Dota 2 hero is:\n\n$name\n\nWhat a fine choice!"
   }
 
   companion object {
