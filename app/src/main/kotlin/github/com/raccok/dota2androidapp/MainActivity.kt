@@ -56,7 +56,7 @@ class MainActivity : Activity() {
     // Read the user's favorite hero, or an empty string if nothing found
     val name = mSharedPreferences?.getString(PREF_NAME, "")
 
-    if (name?.isNotEmpty()!!) {
+    if (name != null && name.isNotEmpty()) {
       // If the name is valid, display it
       Toast.makeText(this, "Loaded your favorite Dota 2 hero '$name' from device storage", Toast.LENGTH_LONG).show()
       setFavoriteHeroText(name)
