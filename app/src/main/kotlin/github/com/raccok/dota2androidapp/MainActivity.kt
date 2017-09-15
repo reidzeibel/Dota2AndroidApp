@@ -31,7 +31,6 @@ import android.widget.TextView
 import android.widget.Toast
 
 class MainActivity : Activity() {
-
   private var mMainTextView: TextView? = null
   private var mSharedPreferences: SharedPreferences? = null
 
