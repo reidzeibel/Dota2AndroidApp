@@ -23,6 +23,5 @@ fun appIsMissingPermissions(context: Context) : Boolean {
 }
 
 private fun appHasPermission(context: Context, permission: String): Boolean {
-  val res = ContextCompat.checkSelfPermission(context, permission)
-  return res == PackageManager.PERMISSION_GRANTED
+  return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 }
