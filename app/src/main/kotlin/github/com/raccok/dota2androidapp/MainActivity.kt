@@ -45,6 +45,13 @@ class MainActivity : Activity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    if (resources.getString(R.string.api_key).isEmpty()) {
+      Toast.makeText(applicationContext,
+                     "Need to provide a valid Steam Web API key in res/values/strings.xml!",
+                     Toast.LENGTH_LONG).show()
+      return
+    }
+
     if (appIsMissingPermissions(applicationContext))
       return
 
@@ -117,8 +124,10 @@ class MainActivity : Activity() {
     val client = AsyncHttpClient()
 
     // Additional parameters needed to query the Dota 2 API for currently available heroes
-    // (TODO: the API key is hard-coded temporarily, until we have Steam user authentication)
-    val params = "IEconDOTA2_570/GetHeroes/v1?key=F9FEEEDF9C7762EA5D76F2EEDB7A08BC&language=en_us"
+    // (TODO: The Steam Web API key must be manually provided in res/values/strings.xml temporarily,
+    // until we have Steam user authentication)
+    val params = "IEconDOTA2_570/GetHeroes/v1?key=" + resources.getString(R.string.api_key) +
+                 "&language=en_us"
 
     // Have the client get a JSONObject of data and define how to respond
     client.get(STEAM_API_URL + params, object : JsonHttpResponseHandler() {

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Dota 2 Android App</string>
+    <!-- A valid Steam Web API key. Get yours at https://steamcommunity.com/dev/apikey -->
+    <string name="api_key"></string>
 </resources>
