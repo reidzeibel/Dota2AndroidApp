@@ -25,21 +25,20 @@ package github.com.raccok.dota2androidapp
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
 import cz.msebera.android.httpclient.Header
 import org.json.JSONObject
-import android.net.ConnectivityManager
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : Activity() {
   private var mUserInput = ""
   private var mHeroNames: MutableList<String> = mutableListOf()
-  private var mMainTextView: TextView? = null
   private var mSharedPreferences: SharedPreferences? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,9 +56,6 @@ class MainActivity : Activity() {
 
     setContentView(R.layout.activity_main)
 
-    // Get a handle to the TextView defined in res/layout/activity_main.xml
-    mMainTextView = findViewById(R.id.main_textview)
-
     // Get a handle to the device's key-value storage
     mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE)
 
@@ -69,7 +65,7 @@ class MainActivity : Activity() {
 
   private fun displayWelcome() {
     // Initially displayed text
-    mMainTextView?.text = "Your favorite Dota 2 hero has not been defined yet."
+    textView.text = "Your favorite Dota 2 hero has not been defined yet."
 
     // Read the user's favorite hero, or an empty string if nothing found
     val name = mSharedPreferences?.getString(PREF_NAME, "")
@@ -195,7 +191,7 @@ class MainActivity : Activity() {
   }
 
   private fun setFavoriteHeroText(name: String) {
-    mMainTextView?.text = "Your favorite Dota 2 hero is:\n\n$name\n\nWhat a fine choice!"
+    textView.text = "Your favorite Dota 2 hero is:\n\n$name\n\nWhat a fine choice!"
   }
 
   companion object {
