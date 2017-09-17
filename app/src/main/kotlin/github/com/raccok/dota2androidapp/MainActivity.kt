@@ -24,28 +24,68 @@ package github.com.raccok.dota2androidapp
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
+import android.widget.EditText
+import android.widget.Toast
+import github.com.raccok.dota2androidapp.utils.SharedPreferenceHelper
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : Activity() {
-  private var mBackend: MainBackend = MainBackend()
-  private var mFrontend: MainFrontend = MainFrontend()
+class MainActivity : Activity(), MainActivityInterface {
+    private lateinit var mBackend: MainBackend
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-    if (!mBackend.init(mFrontend, resources, applicationContext,
-                       getSharedPreferences("general", Context.MODE_PRIVATE),
-                       getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?))
-      return
+        mBackend = MainBackend(this, this)
 
-    setContentView(R.layout.activity_main)
+        if (resources.getString(R.string.api_key).isEmpty()) {
+            Toast.makeText(this,
+                    "Need to provide a valid Steam Web API key in res/values/strings.xml!",
+                    Toast.LENGTH_LONG).show()
+        }
 
-    mFrontend.init(mBackend, applicationContext, textView, AlertDialog.Builder(this))
+        if (!appIsMissingPermissions(this)) {
+            displayWelcome()
+        }
 
-    // Display loaded favorite Dota 2 hero or ask for it if not defined yet
-    mFrontend.displayWelcome()
-  }
+
+    }
+
+    private fun displayWelcome() {
+        // Initially displayed text
+        textView.text = "Your favorite Dota 2 hero has not been defined yet."
+
+        // Read the user's favorite Dota 2 hero, or an empty string if not found
+        val favoriteHero = SharedPreferenceHelper(this).getFavoriteHero()
+
+        if (favoriteHero.isNotEmpty()) {
+            Toast.makeText(this,
+                    "Loaded your favorite Dota 2 hero '$favoriteHero' from device storage",
+                    Toast.LENGTH_LONG).show()
+            textView.text = "Your favorite Dota 2 hero is: '$favoriteHero' What a fine choice!"
+        } else {
+            // EditText for entry
+            val input = EditText(this)
+
+            AlertDialog.Builder(this)                                                        // Create alert dialog
+                    .setTitle("Hello!")                                                              // Title
+                    .setMessage("What is your favorite Dota 2 hero?")                                // Message
+                    .setView(input)                                                                  // EditText as view
+                    .setPositiveButton("OK") { _,_ ->                                           // Add Positive button
+                        mBackend.saveFavoriteHero(input.text.toString())  // Save to preference if ok
+                    }
+                    .setNegativeButton("Cancel") { _,_ ->                                       // Add negative button that only dismisses the dialog
+                    }
+                    .show()                                                                          // Show dialog
+        }
+    }
+
+    override fun onValidInput(userInput: String) {
+        textView.text = "Your favorite Dota 2 hero is: '$userInput' What a fine choice!"
+    }
+
+    override fun onInvalidInput() {
+        displayWelcome()
+    }
 }
